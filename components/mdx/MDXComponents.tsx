@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import JupyterCell from '@/components/blog/JupyterCell'
 import MathBlock from '@/components/blog/MathBlock'
 import PostChart from '@/components/blog/PostChart'
@@ -7,8 +8,8 @@ export const MDX_COMPONENTS = {
   MathBlock,
   PostChart,
   // Override default HTML elements for dark terminal styling
-  pre: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  code: ({ children, className }: { children: React.ReactNode; className?: string }) => {
+  pre: ({ children }: { children: ReactNode }) => <>{children}</>,
+  code: ({ children, className }: { children: ReactNode; className?: string }) => {
     const lang = className?.replace('language-', '') ?? 'text'
     const code = String(children).trimEnd()
     return (
@@ -22,19 +23,19 @@ export const MDX_COMPONENTS = {
       </div>
     )
   },
-  h2: ({ children }: { children: React.ReactNode }) => (
+  h2: ({ children }: { children: ReactNode }) => (
     <h2 className="text-xl font-bold text-slate-100 mt-10 mb-4 tracking-tight">{children}</h2>
   ),
-  h3: ({ children }: { children: React.ReactNode }) => (
+  h3: ({ children }: { children: ReactNode }) => (
     <h3 className="text-base font-semibold text-slate-200 mt-7 mb-3">{children}</h3>
   ),
-  p: ({ children }: { children: React.ReactNode }) => (
+  p: ({ children }: { children: ReactNode }) => (
     <p className="text-[13.5px] text-text-dim leading-[1.9] mb-5">{children}</p>
   ),
-  a: ({ href, children }: { href?: string; children: React.ReactNode }) => (
+  a: ({ href, children }: { href?: string; children: ReactNode }) => (
     <a href={href} className="text-accent hover:underline">{children}</a>
   ),
-  blockquote: ({ children }: { children: React.ReactNode }) => (
+  blockquote: ({ children }: { children: ReactNode }) => (
     <blockquote className="border-l-2 border-accent pl-4 my-5 text-text-dim italic">{children}</blockquote>
   ),
 }

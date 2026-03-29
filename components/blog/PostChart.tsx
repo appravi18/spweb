@@ -55,7 +55,7 @@ export default function PostChart({ type, labels, datasets, height = 220, title 
       },
     })
     return () => chart.destroy()
-  }, [])
+  }, [type, JSON.stringify(labels), JSON.stringify(datasets)])
 
   return (
     <div className="bg-bg-surface border border-[#252d3d] rounded-md overflow-hidden my-6">
@@ -65,7 +65,7 @@ export default function PostChart({ type, labels, datasets, height = 220, title 
         </div>
       )}
       <div className="p-5" style={{ height }}>
-        <canvas ref={canvasRef} />
+        <canvas ref={canvasRef} aria-label={title ?? 'Chart'} />
       </div>
     </div>
   )
