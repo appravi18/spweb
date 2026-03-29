@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react'
+import type { MDXRemoteProps } from 'next-mdx-remote/rsc'
 import JupyterCell from '@/components/blog/JupyterCell'
 import MathBlock from '@/components/blog/MathBlock'
 import PostChart from '@/components/blog/PostChart'
 
-export const MDX_COMPONENTS = {
+export const MDX_COMPONENTS: MDXRemoteProps['components'] = {
   JupyterCell,
   MathBlock,
   PostChart,

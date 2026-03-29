@@ -1,4 +1,3 @@
-'use client'
 import type { ReactNode } from 'react'
 import KpiCard from '@/components/dashboard/KpiCard'
 import EquityCurveChart from '@/components/dashboard/EquityCurveChart'

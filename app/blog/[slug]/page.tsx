@@ -41,12 +41,12 @@ export default async function BlogPostPage({ params }: Props) {
           <span className="font-mono text-[10px] text-text-muted ml-auto">// {post.readTime} min read</span>
         </div>
         <div className="prose-custom">
-          <MDXRemote source={post.content} components={MDX_COMPONENTS as any} />
+          <MDXRemote source={post.content} components={MDX_COMPONENTS} />
         </div>
       </article>
 
       {/* Sidebar */}
-      <aside className="hidden lg:block w-56 shrink-0 px-6 py-12 bg-bg-surface">
+      <aside className="hidden lg:block w-56 shrink-0 px-6 py-12 bg-bg-surface sticky top-12">
         <p className="font-mono text-[9px] text-text-muted tracking-[2px] mb-5 uppercase">Tags</p>
         <div className="flex flex-wrap gap-2">
           {post.tags.map(t => (
