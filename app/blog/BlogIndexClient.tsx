@@ -1,11 +1,14 @@
 'use client'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import type { PostMeta } from '@/lib/posts'
 import BlogCard from '@/components/blog/BlogCard'
 import TagFilter from '@/components/blog/TagFilter'
 
 export default function BlogIndexClient({ posts }: { posts: PostMeta[] }) {
-  const allTags = Array.from(new Set(posts.flatMap(p => p.tags)))
+  const allTags = useMemo(
+    () => Array.from(new Set(posts.flatMap(p => p.tags))).sort(),
+    [posts]
+  )
   const [active, setActive] = useState('ALL')
 
   const filtered = active === 'ALL' ? posts : posts.filter(p => p.tags.includes(active))
@@ -18,7 +21,7 @@ export default function BlogIndexClient({ posts }: { posts: PostMeta[] }) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-8">
         {filtered.map(p => <BlogCard key={p.slug} post={p} />)}
         {filtered.length === 0 && (
-          <p className="col-span-3 font-mono text-xs text-text-muted py-12 text-center">
+          <p className="col-span-full font-mono text-xs text-text-muted py-12 text-center">
             No posts yet — check back soon.
           </p>
         )}

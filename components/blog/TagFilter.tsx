@@ -5,11 +5,12 @@ interface Props { tags: string[]; active: string; onChange: (tag: string) => voi
 export default function TagFilter({ tags, active, onChange }: Props) {
   const all = ['ALL', ...tags]
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-2" role="group" aria-label="Filter posts by tag">
       {all.map(tag => (
         <button
           key={tag}
           onClick={() => onChange(tag)}
+          aria-pressed={active === tag}
           className={`font-mono text-[10px] px-3 py-1.5 rounded-sm border transition-colors uppercase tracking-wide ${
             active === tag
               ? 'bg-accent text-bg-base border-accent'
