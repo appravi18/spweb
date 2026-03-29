@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import ParticleCanvas from './ParticleCanvas'
 import TypewriterTagline from './TypewriterTagline'
+import AnimatedStat from './AnimatedStat'
 import { HOME_STATS } from '@/lib/mockData'
 
 export default function HeroSection() {
@@ -29,12 +30,7 @@ export default function HeroSection() {
         {/* Stats strip */}
         <div className="flex gap-10 mt-12 pt-8 border-t border-border-dim">
           {HOME_STATS.map(s => (
-            <div key={s.label}>
-              <div className="text-xl font-bold font-mono text-accent tracking-tight">
-                {s.value}{s.suffix ?? ''}
-              </div>
-              <div className="text-[9px] font-mono text-text-muted tracking-widest mt-1">{s.label}</div>
-            </div>
+            <AnimatedStat key={s.label} value={String(s.value)} suffix={s.suffix} label={s.label} />
           ))}
         </div>
       </div>

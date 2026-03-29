@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react'
 const PHRASES = [
   'LSTM models',
   'transformer architectures',
-  'backtesting frameworks',
   'CVaR risk metrics',
   'alpha generation',
+  'Sharpe optimization',
 ]
 
 export default function TypewriterTagline() {
