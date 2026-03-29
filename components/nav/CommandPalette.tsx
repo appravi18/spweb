@@ -64,8 +64,8 @@ export default function CommandPalette() {
           <kbd className="text-[9px] font-mono bg-border-dim text-text-dim px-1.5 py-0.5 rounded">ESC</kbd>
         </div>
         <ul className="max-h-72 overflow-y-auto py-2">
-          {filtered.map((item, i) => (
-            <li key={i}>
+          {filtered.map((item) => (
+            <li key={item.href}>
               <Link
                 href={item.href}
                 onClick={() => setOpen(false)}

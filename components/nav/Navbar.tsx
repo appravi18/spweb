@@ -21,7 +21,8 @@ export default function Navbar() {
       setScrolled(window.scrollY > 10)
       if (isPost) {
         const h = document.documentElement
-        setProgress((h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100)
+        const scrollable = h.scrollHeight - h.clientHeight
+        setProgress(scrollable > 0 ? (h.scrollTop / scrollable) * 100 : 0)
       }
     }
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -44,6 +45,12 @@ export default function Navbar() {
               {l.label}
             </Link>
           ))}
+          <button
+            onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true, bubbles: true }))}
+            className="hidden md:flex items-center gap-1 text-[9px] font-mono text-text-muted border border-border-dim px-2 py-1 rounded hover:border-accent/50 hover:text-text-dim transition-colors"
+          >
+            ⌘K
+          </button>
           <Link
             href="/contact"
             className="border border-accent text-accent px-3 py-1 rounded-sm font-mono text-[10px] hover:bg-accent hover:text-bg-base transition-colors"
