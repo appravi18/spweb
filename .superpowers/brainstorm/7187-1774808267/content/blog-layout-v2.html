@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog Layout v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0a0e1a; color: #e2e8f0; font-family: 'Inter', sans-serif; font-size: 13px; }
+
+  .nav { background: #0d1117; border-bottom: 1px solid #1e293b; padding: 11px 28px; display: flex; justify-content: space-between; align-items: center; }
+  .nav-brand { color: #00d4ff; font-weight: 700; font-size: 13px; font-family: 'JetBrains Mono', monospace; }
+  .nav-brand span { color: #334155; }
+  .nav-links { display: flex; gap: 20px; font-size: 11px; color: #475569; }
+  .nav-links .active { color: #00d4ff; }
+
+  .layout { display: grid; grid-template-columns: 1fr 210px; }
+
+  .main { padding: 32px 36px; border-right: 1px solid #1e293b; }
+
+  .breadcrumb { color: #334155; font-size: 9px; letter-spacing: 1.5px; margin-bottom: 18px; font-family: 'JetBrains Mono', monospace; }
+
+  .post-title { font-size: 22px; font-weight: 700; line-height: 1.3; color: #f1f5f9; margin-bottom: 10px; }
+
+  .post-meta { display: flex; gap: 10px; align-items: center; margin-bottom: 22px; }
+  .post-date { color: #475569; font-size: 10px; font-family: 'JetBrains Mono', monospace; }
+  .tag { background: #00d4ff15; color: #00d4ff; font-size: 9px; padding: 2px 7px; border-radius: 2px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.5px; }
+  .read-time { color: #475569; font-size: 10px; }
+
+  .prose { color: #94a3b8; font-size: 12.5px; line-height: 1.85; margin-bottom: 20px; }
+
+  /* LaTeX block */
+  .eq-block { background: #0d1117; border: 1px solid #1e293b; border-radius: 5px; padding: 14px 20px; margin-bottom: 20px; text-align: center; }
+  .eq-label { color: #334155; font-size: 9px; letter-spacing: 1.5px; font-family: 'JetBrains Mono', monospace; margin-bottom: 10px; }
+  .eq-formula { color: #e2e8f0; font-size: 15px; font-family: 'Georgia', serif; }
+  .eq-caption { color: #334155; font-size: 9px; margin-top: 8px; font-family: 'JetBrains Mono', monospace; }
+
+  /* Jupyter cell */
+  .cell { margin-bottom: 20px; border-radius: 5px; overflow: hidden; border: 1px solid #1e293b; }
+  .cell-header { background: #0f172a; padding: 5px 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #1e293b; }
+  .cell-in { color: #334155; font-size: 9px; font-family: 'JetBrains Mono', monospace; }
+  .cell-lang { color: #475569; font-size: 9px; font-family: 'JetBrains Mono', monospace; margin-left: auto; }
+  .cell-dots { display: flex; gap: 5px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; }
+
+  /* Code area - Tokyo Night inspired */
+  .code-body { background: #1a1b2e; padding: 16px 18px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.75; }
+  .ln { color: #2d3561; user-select: none; display: inline-block; width: 22px; text-align: right; margin-right: 14px; font-size: 11px; }
+
+  /* Tokyo Night syntax colors */
+  .k  { color: #bb9af7; } /* keyword: import, def, return */
+  .n  { color: #c0caf5; } /* name/identifier */
+  .fn { color: #7aa2f7; } /* function name */
+  .s  { color: #9ece6a; } /* string */
+  .nb { color: #2ac3de; } /* number / builtin */
+  .op { color: #89ddff; } /* operator */
+  .cm { color: #565f89; font-style: italic; } /* comment */
+  .p  { color: #c0caf5; } /* punctuation */
+  .df { color: #ff9e64; } /* decorator / special */
+
+  /* Output */
+  .cell-out { background: #060910; border-top: 1px solid #1e293b; padding: 10px 18px; display: flex; align-items: center; gap: 10px; }
+  .cell-out-label { color: #334155; font-size: 9px; font-family: 'JetBrains Mono', monospace; }
+  .cell-out-val { color: #73daca; font-size: 11.5px; font-family: 'JetBrains Mono', monospace; }
+
+  /* Chart */
+  .chart-block { background: #0d1117; border: 1px solid #1e293b; border-radius: 5px; padding: 16px 18px; margin-bottom: 20px; }
+  .chart-label { color: #334155; font-size: 9px; letter-spacing: 1.5px; font-family: 'JetBrains Mono', monospace; margin-bottom: 12px; }
+  .bars { height: 64px; display: flex; align-items: flex-end; gap: 3px; }
+  .bar { flex: 1; border-radius: 2px 2px 0 0; }
+  .chart-legend { display: flex; justify-content: flex-end; margin-top: 8px; gap: 14px; }
+  .legend-item { color: #475569; font-size: 9px; font-family: 'JetBrains Mono', monospace; }
+
+  /* Sidebar */
+  .sidebar { padding: 32px 18px; background: #0d1117; }
+  .sidebar-label { color: #334155; font-size: 9px; letter-spacing: 2px; font-family: 'JetBrains Mono', monospace; margin-bottom: 14px; }
+  .toc { display: flex; flex-direction: column; gap: 9px; font-size: 11px; }
+  .toc-active { color: #00d4ff; border-left: 2px solid #00d4ff; padding-left: 8px; font-family: 'JetBrains Mono', monospace; }
+  .toc-item { color: #475569; padding-left: 10px; font-family: 'Inter', sans-serif; }
+  .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 20px; }
+  .sidebar-divider { border-top: 1px solid #1e293b; margin: 20px 0; }
+
+  .page-header { padding: 8px 16px; background: #0a0e1a; color: #00d4ff; font-family: 'JetBrains Mono', monospace; font-size: 11px; border-bottom: 1px solid #1e293b; }
+</style>
+</head>
+<body>
+
+<div class="page-header">Design — Section 3: Blog Post Layout &nbsp;·&nbsp; <span style="color:#475569;">JetBrains Mono · Tokyo Night syntax · Inter prose</span></div>
+
+<div class="nav">
+  <div class="nav-brand">SECONDPROFITS<span>.NET</span></div>
+  <div class="nav-links">
+    <span class="active">Blog</span><span>Research</span><span>Dashboard</span><span>About</span>
+    <span style="border:1px solid #00d4ff;color:#00d4ff;padding:2px 10px;border-radius:2px;">Contact</span>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="main">
+    <div class="breadcrumb">BLOG / RISK MODELS</div>
+    <div class="post-title">VaR, SVaR and CVaR:<br>A Practical Python Implementation</div>
+    <div class="post-meta">
+      <span class="post-date">2026-03-29</span>
+      <span class="tag">RISK</span><span class="tag">PYTHON</span><span class="tag">QUANT</span>
+      <span class="read-time">6 min read</span>
+    </div>
+
+    <div class="prose">
+      Value at Risk (VaR) quantifies the maximum expected loss at a given confidence level over a fixed horizon.
+      Conditional VaR (CVaR), also known as Expected Shortfall, goes further — it measures the <em style="color:#c0caf5;">average</em> loss
+      in the tail beyond the VaR threshold. Below we implement all three measures from scratch in Python.
+    </div>
+
+    <!-- Equation -->
+    <div class="eq-block">
+      <div class="eq-label">DEFINITION · CONDITIONAL VALUE AT RISK</div>
+      <div class="eq-formula">CVaR<sub style="font-size:10px;">α</sub> &nbsp;=&nbsp; −𝔼[R &nbsp;|&nbsp; R ≤ VaR<sub style="font-size:10px;">α</sub>]</div>
+      <div class="eq-caption">where α is the confidence level and R is the portfolio return</div>
+    </div>
+
+    <!-- Cell 1 -->
+    <div class="cell">
+      <div class="cell-header">
+        <span class="cell-in">IN [1]:</span>
+        <div class="cell-dots">
+          <div class="dot" style="background:#ff5f57;"></div>
+          <div class="dot" style="background:#febc2e;"></div>
+          <div class="dot" style="background:#28c840;"></div>
+        </div>
+        <span class="cell-lang">python</span>
+      </div>
+      <div class="code-body">
+        <div><span class="ln">1</span><span class="k">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span></div>
+        <div><span class="ln">2</span><span class="k">import</span> <span class="n">pandas</span> <span class="k">as</span> <span class="n">pd</span></div>
+        <div><span class="ln">3</span><span class="k">from</span> <span class="n">scipy</span> <span class="k">import</span> <span class="n">stats</span></div>
+        <div><span class="ln">4</span>&nbsp;</div>
+        <div><span class="ln">5</span><span class="k">def</span> <span class="fn">compute_risk_metrics</span><span class="p">(</span><span class="n">returns</span><span class="p">:</span> <span class="n">np</span><span class="p">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="op">=</span> <span class="nb">0.95</span><span class="p">):</span></div>
+        <div><span class="ln">6</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># Historical VaR at confidence level alpha</span></div>
+        <div><span class="ln">7</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="n">var</span> <span class="op">=</span> <span class="n">np</span><span class="p">.</span><span class="fn">percentile</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="nb">100</span> <span class="op">*</span> <span class="p">(</span><span class="nb">1</span> <span class="op">-</span> <span class="n">alpha</span><span class="p">))</span></div>
+        <div><span class="ln">8</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># CVaR: mean of returns below VaR threshold</span></div>
+        <div><span class="ln">9</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="n">cvar</span> <span class="op">=</span> <span class="n">returns</span><span class="p">[</span><span class="n">returns</span> <span class="op">&lt;=</span> <span class="n">var</span><span class="p">].</span><span class="fn">mean</span><span class="p">()</span></div>
+        <div><span class="ln">10</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="k">return</span> <span class="p">{</span><span class="s">"var"</span><span class="p">:</span> <span class="n">var</span><span class="p">,</span> <span class="s">"cvar"</span><span class="p">:</span> <span class="n">cvar</span><span class="p">}</span></div>
+      </div>
+      <div class="cell-out">
+        <span class="cell-out-label">OUT [1]:</span>
+        <span class="cell-out-val">{'var': -0.0231, 'cvar': -0.0287}</span>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-block">
+      <div class="chart-label">OUTPUT · RETURN DISTRIBUTION + VaR / CVaR THRESHOLDS</div>
+      <div class="bars">
+        <div class="bar" style="height:8%;background:#1e293b;"></div>
+        <div class="bar" style="height:14%;background:#1e293b;"></div>
+        <div class="bar" style="height:28%;background:#1e293b;"></div>
+        <div class="bar" style="height:45%;background:#1e293b;"></div>
+        <div class="bar" style="height:68%;background:#1e293b;"></div>
+        <div class="bar" style="height:88%;background:#1e293b;"></div>
+        <div class="bar" style="height:100%;background:#1e293b;"></div>
+        <div class="bar" style="height:82%;background:#1e293b;"></div>
+        <div class="bar" style="height:55%;background:#1e293b;"></div>
+        <div class="bar" style="height:32%;background:#1e293b;"></div>
+        <div class="bar" style="height:16%;background:#334155;border:1px solid #00d4ff44;"></div>
+        <div class="bar" style="height:10%;background:#f59e0b33;"></div>
+        <div class="bar" style="height:6%;background:#ef444466;"></div>
+        <div class="bar" style="height:3%;background:#ef444466;"></div>
+      </div>
+      <div class="chart-legend">
+        <span class="legend-item" style="color:#475569;">▪ Returns</span>
+        <span class="legend-item" style="color:#00d4ff;">| VaR (95%)</span>
+        <span class="legend-item" style="color:#f59e0b;">▪ SVaR region</span>
+        <span class="legend-item" style="color:#ef4444;">▪ CVaR tail</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TOC Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-label">TABLE OF CONTENTS</div>
+    <div class="toc">
+      <div class="toc-active">Introduction</div>
+      <div class="toc-item">What is VaR?</div>
+      <div class="toc-item">Stressed VaR (SVaR)</div>
+      <div class="toc-item">CVaR / Exp. Shortfall</div>
+      <div class="toc-item">Python Implementation</div>
+      <div class="toc-item">Visualization</div>
+      <div class="toc-item">Conclusion</div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-label">TAGS</div>
+    <div class="tags">
+      <span class="tag">risk</span>
+      <span class="tag">python</span>
+      <span class="tag">var</span>
+      <span class="tag">cvar</span>
+      <span class="tag">quant</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// inject superpowers helper
+const s = document.createElement('script');
+s.src = '/helper.js';
+document.head.appendChild(s);
+</script>
+</body>
+</html>

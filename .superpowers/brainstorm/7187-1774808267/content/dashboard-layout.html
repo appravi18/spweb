@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Layout</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; background: #0a0e1a; color: #e2e8f0; font-family: 'Inter', sans-serif; font-size: 13px; }
+
+  .page-hdr { padding: 8px 16px; background: #060910; color: #00d4ff; font-family: 'JetBrains Mono', monospace; font-size: 11px; border-bottom: 1px solid #1e293b; }
+  .page-hdr span { color: #334155; }
+
+  .nav { background: #0d1117; border-bottom: 1px solid #1e293b; padding: 12px 32px; display: flex; justify-content: space-between; align-items: center; }
+  .nav-brand { color: #00d4ff; font-weight: 700; font-size: 14px; font-family: 'JetBrains Mono', monospace; }
+  .nav-brand span { color: #334155; }
+  .nav-links { display: flex; gap: 24px; font-size: 11px; color: #475569; align-items: center; }
+  .nav-links .active { color: #00d4ff; }
+  .nav-cta { border: 1px solid #00d4ff; color: #00d4ff; padding: 4px 14px; border-radius: 2px; font-size: 10px; font-family: 'JetBrains Mono', monospace; }
+
+  .dash { padding: 32px 40px; }
+
+  .dash-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; }
+  .dash-title { font-size: 20px; font-weight: 800; color: #f8fafc; letter-spacing: -0.5px; }
+  .dash-sub { color: #334155; font-size: 10px; font-family: 'JetBrains Mono', monospace; margin-top: 4px; }
+  .live-badge { display: flex; align-items: center; gap: 6px; background: #0d1117; border: 1px solid #1e293b; border-radius: 4px; padding: 5px 12px; }
+  .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #50fa7b; animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+  .live-txt { color: #50fa7b; font-size: 10px; font-family: 'JetBrains Mono', monospace; }
+
+  /* KPI strip */
+  .kpi-strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 24px; }
+  .kpi { background: #0d1117; border: 1px solid #1e293b; border-radius: 6px; padding: 16px 18px; }
+  .kpi-label { color: #334155; font-size: 9px; letter-spacing: 2px; font-family: 'JetBrains Mono', monospace; margin-bottom: 8px; }
+  .kpi-val { font-size: 22px; font-weight: 800; font-family: 'JetBrains Mono', monospace; letter-spacing: -1px; }
+  .kpi-change { font-size: 10px; font-family: 'JetBrains Mono', monospace; margin-top: 4px; }
+  .up { color: #50fa7b; } .dn { color: #ff5555; } .nu { color: #00d4ff; }
+
+  /* Chart grid */
+  .chart-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  .chart-card { background: #0d1117; border: 1px solid #1e293b; border-radius: 6px; overflow: hidden; }
+  .chart-card-hdr { padding: 12px 16px; border-bottom: 1px solid #1e293b; display: flex; justify-content: space-between; align-items: center; }
+  .chart-card-title { font-size: 11px; font-weight: 600; color: #94a3b8; font-family: 'JetBrains Mono', monospace; }
+  .chart-card-meta { font-size: 9px; color: #334155; font-family: 'JetBrains Mono', monospace; }
+  .chart-card-body { padding: 16px; }
+  .chart-h { position: relative; }
+  .chart-h-lg { height: 180px; }
+  .chart-h-sm { height: 130px; }
+  .chart-h-xs { height: 110px; }
+</style>
+</head>
+<body>
+
+<div class="page-hdr">Design — Section 5: Dashboard Page &nbsp;·&nbsp; <span>live model metrics · Chart.js</span></div>
+
+<div class="nav">
+  <div class="nav-brand">SECONDPROFITS<span>.NET</span></div>
+  <div class="nav-links">
+    <span>Blog</span><span>Research</span><span class="active">Dashboard</span><span>About</span>
+    <span class="nav-cta">Contact</span>
+  </div>
+</div>
+
+<div class="dash">
+  <div class="dash-header">
+    <div>
+      <div class="dash-title">Model Performance Dashboard</div>
+      <div class="dash-sub">// LSTM-Attention · SPY · 2020–2024 backtest</div>
+    </div>
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      <span class="live-txt">LIVE · updated 09:32 EST</span>
+    </div>
+  </div>
+
+  <!-- KPI strip -->
+  <div class="kpi-strip">
+    <div class="kpi">
+      <div class="kpi-label">TOTAL RETURN</div>
+      <div class="kpi-val up">+184%</div>
+      <div class="kpi-change up">▲ vs buy-hold +67pp</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">SHARPE RATIO</div>
+      <div class="kpi-val nu">2.41</div>
+      <div class="kpi-change" style="color:#475569;">annualised</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">MAX DRAWDOWN</div>
+      <div class="kpi-val dn">-8.3%</div>
+      <div class="kpi-change dn">▼ worst peak-to-trough</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">CVaR 95%</div>
+      <div class="kpi-val dn">-2.87%</div>
+      <div class="kpi-change" style="color:#475569;">daily expected shortfall</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">WIN RATE</div>
+      <div class="kpi-val up">63.4%</div>
+      <div class="kpi-change up">▲ 1,258 trading days</div>
+    </div>
+  </div>
+
+  <!-- Main charts -->
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-card-hdr">
+        <span class="chart-card-title">EQUITY CURVE · MODEL vs BENCHMARK</span>
+        <span class="chart-card-meta">2020-01-01 → 2024-12-31</span>
+      </div>
+      <div class="chart-card-body">
+        <div class="chart-h chart-h-lg"><canvas id="equityChart"></canvas></div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-hdr">
+        <span class="chart-card-title">MONTHLY RETURNS HEATMAP</span>
+        <span class="chart-card-meta">2022–2024</span>
+      </div>
+      <div class="chart-card-body">
+        <div class="chart-h chart-h-lg"><canvas id="monthlyChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-grid-2">
+    <div class="chart-card">
+      <div class="chart-card-hdr">
+        <span class="chart-card-title">DRAWDOWN</span>
+        <span class="chart-card-meta">rolling peak-to-trough</span>
+      </div>
+      <div class="chart-card-body">
+        <div class="chart-h chart-h-xs"><canvas id="ddChart"></canvas></div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-hdr">
+        <span class="chart-card-title">RETURN DISTRIBUTION</span>
+        <span class="chart-card-meta">daily · 1,258 obs</span>
+      </div>
+      <div class="chart-card-body">
+        <div class="chart-h chart-h-xs"><canvas id="distChart"></canvas></div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-hdr">
+        <span class="chart-card-title">ROLLING SHARPE</span>
+        <span class="chart-card-meta">60-day window</span>
+      </div>
+      <div class="chart-card-body">
+        <div class="chart-h chart-h-xs"><canvas id="sharpeChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const FONT = 'JetBrains Mono';
+const gridColor  = '#1a2030';
+const tickColor  = '#3d4f6e';
+const baseOpts = {
+  responsive: true, maintainAspectRatio: false,
+  animation: { duration: 900, easing: 'easeOutQuart' },
+  plugins: { legend: { display: false }, tooltip: {
+    backgroundColor: '#141928', borderColor: '#252d3d', borderWidth: 1,
+    titleColor: '#00d4ff', bodyColor: '#94a3b8',
+    titleFont: { family: FONT, size: 10 }, bodyFont: { family: FONT, size: 10 }
+  }},
+  scales: {
+    x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { family: FONT, size: 9 }, maxTicksLimit: 8 } },
+    y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { family: FONT, size: 9 } } }
+  }
+};
+
+// ── Helpers ──
+function gaussian() {
+  let u=0,v=0; while(!u)u=Math.random(); while(!v)v=Math.random();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+}
+function cumsum(arr) { let s=100; return arr.map(v=>(s*=1+v, s)); }
+function drawGlowLine(ctx, pts, color, glow=12) {
+  ctx.shadowColor=color; ctx.shadowBlur=glow;
+  ctx.strokeStyle=color; ctx.lineWidth=2;
+  ctx.beginPath();
+  pts.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+  ctx.stroke(); ctx.shadowBlur=0;
+}
+
+// Date labels monthly
+const months = [];
+const d = new Date(2020,0,1);
+while(d <= new Date(2024,11,31)) { months.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`); d.setMonth(d.getMonth()+1); }
+
+// Model returns (slightly better than market)
+const mktRets  = Array.from({length:60}, ()=> gaussian()*0.032 + 0.003);
+const modelRets= mktRets.map(r => r * 0.7 + gaussian()*0.018 + 0.005);
+const mktEq    = cumsum(mktRets);
+const modelEq  = cumsum(modelRets);
+
+// ── 1. Equity curve ──
+const eCtx = document.getElementById('equityChart').getContext('2d');
+const mktGrad = eCtx.createLinearGradient(0,0,0,180);
+mktGrad.addColorStop(0,'rgba(100,116,139,0.15)'); mktGrad.addColorStop(1,'rgba(100,116,139,0)');
+const modGrad = eCtx.createLinearGradient(0,0,0,180);
+modGrad.addColorStop(0,'rgba(0,212,255,0.2)'); modGrad.addColorStop(1,'rgba(0,212,255,0)');
+
+new Chart(eCtx, { type:'line', data:{ labels:months, datasets:[
+  { label:'Benchmark', data:mktEq, borderColor:'#475569', borderWidth:1.5, pointRadius:0, fill:true, backgroundColor:mktGrad, tension:0.3 },
+  { label:'Model',     data:modelEq, borderColor:'#00d4ff', borderWidth:2,   pointRadius:0, fill:true, backgroundColor:modGrad, tension:0.3,
+    borderShadowColor:'#00d4ff' }
+]}, options:{ ...baseOpts, plugins:{ ...baseOpts.plugins, legend:{ display:true, labels:{ color:'#64748b', font:{family:FONT,size:9}, boxWidth:12 } } } } });
+
+// ── 2. Monthly bar chart ──
+const mLabels = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const mData = Array.from({length:12}, ()=> (gaussian()*3 + 1.5).toFixed(2)*1);
+const mColors = mData.map(v => v>=0 ? 'rgba(80,250,123,0.7)' : 'rgba(255,85,85,0.7)');
+new Chart(document.getElementById('monthlyChart'), { type:'bar', data:{ labels:mLabels, datasets:[
+  { data:mData, backgroundColor:mColors, borderColor:mColors.map(c=>c.replace(/[\d.]+\)$/,'1)')), borderWidth:0.5, borderRadius:2 }
+]}, options:{ ...baseOpts } });
+
+// ── 3. Drawdown ──
+let peak=100, dd=[];
+modelEq.forEach(v=>{ peak=Math.max(peak,v); dd.push(((v-peak)/peak)*100); });
+const ddColors = dd.map(()=>'rgba(255,85,85,0.5)');
+new Chart(document.getElementById('ddChart'), { type:'bar', data:{ labels:months, datasets:[
+  { data:dd, backgroundColor:ddColors, borderColor:'rgba(255,85,85,0.8)', borderWidth:0.5 }
+]}, options:{ ...baseOpts } });
+
+// ── 4. Distribution ──
+const dailyRets = Array.from({length:1258}, ()=> gaussian()*0.012 - 0.0003);
+const bins=30, mn=-0.04, mx=0.04, step=(mx-mn)/bins;
+const cnts=new Array(bins).fill(0);
+dailyRets.forEach(r=>{ const i=Math.min(Math.floor((r-mn)/step),bins-1); if(i>=0)cnts[i]++; });
+const bLabels=Array.from({length:bins},(_,i)=>(mn+i*step+step/2).toFixed(3));
+const bColors=bLabels.map(l=>parseFloat(l)<=-0.0231?'rgba(239,68,68,0.7)':'rgba(0,212,255,0.3)');
+new Chart(document.getElementById('distChart'),{type:'bar',data:{labels:bLabels,datasets:[
+  {data:cnts,backgroundColor:bColors,borderWidth:0.5,borderRadius:1}
+]},options:{...baseOpts}});
+
+// ── 5. Rolling Sharpe ──
+const rs=months.map(()=>(gaussian()*0.6+2.2).toFixed(2)*1);
+const rsGrad=document.getElementById('sharpeChart').getContext('2d').createLinearGradient(0,0,0,110);
+rsGrad.addColorStop(0,'rgba(189,147,249,0.2)'); rsGrad.addColorStop(1,'rgba(189,147,249,0)');
+new Chart(document.getElementById('sharpeChart'),{type:'line',data:{labels:months,datasets:[
+  {data:rs,borderColor:'#bd93f9',borderWidth:2,pointRadius:0,fill:true,backgroundColor:rsGrad,tension:0.4}
+]},options:{...baseOpts}});
+
+const s=document.createElement('script');s.src='/helper.js';document.head.appendChild(s);
+</script>
+</body>
+</html>
