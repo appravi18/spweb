@@ -9,16 +9,20 @@ interface AnimatedStatProps {
 
 export default function AnimatedStat({ value, suffix, label }: AnimatedStatProps) {
   const numeric = parseFloat(value)
-  const isNaN_ = isNaN(numeric)
+  const isNotNumeric = isNaN(numeric)
 
   // Determine decimal places from the original value string
   const dotIndex = value.indexOf('.')
   const decimals = dotIndex === -1 ? 0 : value.length - dotIndex - 1
 
-  const [display, setDisplay] = useState(isNaN_ ? value : (0).toFixed(decimals))
+  const [display, setDisplay] = useState(isNotNumeric ? value : (0).toFixed(decimals))
 
   useEffect(() => {
-    if (isNaN_) return
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReduced || isNotNumeric) {
+      setDisplay(isNotNumeric ? value : numeric.toFixed(decimals))
+      return
+    }
 
     const duration = 1200
     const start = performance.now()
@@ -38,7 +42,7 @@ export default function AnimatedStat({ value, suffix, label }: AnimatedStatProps
 
     raf = requestAnimationFrame(step)
     return () => cancelAnimationFrame(raf)
-  }, [numeric, decimals, isNaN_])
+  }, [numeric, decimals, isNotNumeric])
 
   return (
     <div>

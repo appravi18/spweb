@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const PHRASES = [
   'LSTM models',
@@ -13,14 +13,18 @@ export default function TypewriterTagline() {
   const [text, setText] = useState('')
   const [pi, setPi] = useState(0)
   const [deleting, setDeleting] = useState(false)
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const pauseRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     const phrase = PHRASES[pi]
-    const timeout = setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       if (!deleting) {
         const next = phrase.slice(0, text.length + 1)
         setText(next)
-        if (next === phrase) setTimeout(() => setDeleting(true), 1800)
+        if (next === phrase) {
+          pauseRef.current = setTimeout(() => setDeleting(true), 1800)
+        }
       } else {
         const next = text.slice(0, -1)
         setText(next)
@@ -30,7 +34,10 @@ export default function TypewriterTagline() {
         }
       }
     }, deleting ? 40 : 80)
-    return () => clearTimeout(timeout)
+    return () => {
+      clearTimeout(timeoutRef.current ?? undefined)
+      clearTimeout(pauseRef.current ?? undefined)
+    }
   }, [text, deleting, pi])
 
   return (
