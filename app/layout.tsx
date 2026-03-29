@@ -3,6 +3,7 @@ import './globals.css'
 import Navbar from '@/components/nav/Navbar'
 import Footer from '@/components/ui/Footer'
 import MarketTicker from '@/components/ui/MarketTicker'
+import CommandPalette from '@/components/nav/CommandPalette'
 
 export const metadata: Metadata = {
   title: 'SecondProfits — Deep Learning for Trading',
@@ -17,6 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="flex-1">{children}</main>
         <Footer />
         <MarketTicker />
+        <CommandPalette />
       </body>
     </html>
   )
