@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog Layout v4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; min-height: 100vh; background: #0a0e1a; color: #e2e8f0; font-family: 'Inter', sans-serif; font-size: 13px; }
+
+  .nav { background: #0d1117; border-bottom: 1px solid #1e293b; padding: 12px 32px; display: flex; justify-content: space-between; align-items: center; width: 100%; }
+  .nav-brand { color: #00d4ff; font-weight: 700; font-size: 14px; font-family: 'JetBrains Mono', monospace; letter-spacing: -0.5px; }
+  .nav-brand span { color: #334155; }
+  .nav-links { display: flex; gap: 24px; font-size: 11px; color: #475569; align-items: center; }
+  .nav-links .active { color: #00d4ff; }
+  .nav-cta { border: 1px solid #00d4ff; color: #00d4ff; padding: 4px 14px; border-radius: 2px; font-size: 10px; font-family: 'JetBrains Mono', monospace; }
+
+  .layout { display: grid; grid-template-columns: 1fr 230px; width: 100%; }
+  .main { padding: 36px 48px; border-right: 1px solid #1e293b; width: 100%; }
+
+  .breadcrumb { color: #334155; font-size: 9px; letter-spacing: 2px; margin-bottom: 20px; font-family: 'JetBrains Mono', monospace; }
+  .post-title { font-size: 26px; font-weight: 800; line-height: 1.25; color: #f8fafc; margin-bottom: 12px; letter-spacing: -0.5px; }
+  .post-meta { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #1e293b; }
+  .post-date { color: #475569; font-size: 10px; font-family: 'JetBrains Mono', monospace; }
+  .tag { background: rgba(0,212,255,0.08); color: #00d4ff; font-size: 9px; padding: 3px 8px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.5px; border: 1px solid rgba(0,212,255,0.15); }
+  .read-time { color: #334155; font-size: 10px; font-family: 'JetBrains Mono', monospace; }
+  .prose { color: #94a3b8; font-size: 13.5px; line-height: 1.9; margin-bottom: 24px; }
+  .prose em { color: #cbd5e1; font-style: italic; }
+
+  .eq-block { background: #0d1117; border: 1px solid #1e293b; border-left: 3px solid #00d4ff; border-radius: 0 5px 5px 0; padding: 16px 22px; margin-bottom: 24px; }
+  .eq-label { color: #334155; font-size: 9px; letter-spacing: 2px; font-family: 'JetBrains Mono', monospace; margin-bottom: 10px; }
+  .eq-formula { color: #e2e8f0; font-size: 16px; font-family: 'Georgia', serif; line-height: 1.6; }
+  .eq-caption { color: #475569; font-size: 10px; margin-top: 8px; font-family: 'JetBrains Mono', monospace; }
+
+  .cell { margin-bottom: 24px; border-radius: 6px; overflow: hidden; border: 1px solid #252d3d; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+  .cell-header { background: #141928; padding: 7px 14px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #252d3d; }
+  .traffic { display: flex; gap: 5px; }
+  .traffic span { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .t-red { background: #ff5f57; } .t-yel { background: #febc2e; } .t-grn { background: #28c840; }
+  .cell-in { color: #3d4f6e; font-size: 10px; font-family: 'JetBrains Mono', monospace; margin-left: 4px; }
+  .cell-lang { margin-left: auto; color: #3d4f6e; font-size: 10px; font-family: 'JetBrains Mono', monospace; }
+
+  .code-body { background: #12141f; padding: 18px 0; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.8; }
+  .line { display: flex; padding: 0 18px 0 0; }
+  .line:hover { background: rgba(255,255,255,0.03); }
+  .gutter { width: 44px; min-width: 44px; text-align: right; padding-right: 16px; color: #2d3a4f; font-size: 11px; user-select: none; border-right: 1px solid #1a2030; margin-right: 18px; }
+  .code-content { flex: 1; }
+
+  .kw  { color: #ff79c6; }
+  .bi  { color: #8be9fd; }
+  .fn  { color: #50fa7b; }
+  .st  { color: #f1fa8c; }
+  .nu  { color: #bd93f9; }
+  .cm  { color: #6272a4; font-style: italic; }
+  .op  { color: #ff79c6; }
+  .pm  { color: #f8f8f2; }
+  .pa  { color: #ffb86c; }
+  .tp  { color: #8be9fd; font-style: italic; }
+  .pl  { color: #f8f8f2; }
+  .ar  { color: #ff79c6; }
+
+  .cell-out { background: #0a0c14; border-top: 1px solid #1a2030; padding: 12px 18px 12px calc(44px + 18px + 18px); font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.7; }
+  .out-label { color: #3d4f6e; font-size: 10px; display: block; margin-bottom: 4px; }
+  .out-key { color: #f1fa8c; } .out-val { color: #bd93f9; } .out-ok { color: #50fa7b; font-size: 10px; margin-top: 6px; }
+
+  /* Chart cell */
+  .chart-cell { margin-bottom: 24px; border-radius: 6px; overflow: hidden; border: 1px solid #252d3d; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+  .chart-cell-header { background: #141928; padding: 7px 14px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #252d3d; }
+  .chart-body { background: #12141f; padding: 20px 24px; }
+  .chart-label-txt { color: #3d4f6e; font-size: 10px; font-family: 'JetBrains Mono', monospace; margin-bottom: 14px; }
+  .chart-container { position: relative; height: 220px; width: 100%; }
+
+  .sidebar { padding: 36px 20px; background: #0d1117; }
+  .s-label { color: #334155; font-size: 9px; letter-spacing: 2px; font-family: 'JetBrains Mono', monospace; margin-bottom: 14px; }
+  .toc { display: flex; flex-direction: column; gap: 10px; }
+  .toc-a { color: #00d4ff; border-left: 2px solid #00d4ff; padding-left: 9px; font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+  .toc-i { color: #475569; padding-left: 11px; font-size: 12px; }
+  .s-div { border-top: 1px solid #1e293b; margin: 20px 0; }
+  .tags { display: flex; flex-wrap: wrap; gap: 5px; }
+
+  .page-hdr { padding: 8px 16px; background: #060910; color: #00d4ff; font-family: 'JetBrains Mono', monospace; font-size: 11px; border-bottom: 1px solid #1e293b; }
+  .page-hdr span { color: #334155; }
+</style>
+</head>
+<body>
+
+<div class="page-hdr">Design — Blog Post v4 &nbsp;·&nbsp; <span>Dracula Pro syntax · Chart.js distribution plot · full width</span></div>
+
+<div class="nav">
+  <div class="nav-brand">SECONDPROFITS<span>.NET</span></div>
+  <div class="nav-links">
+    <span class="active">Blog</span><span>Research</span><span>Dashboard</span><span>About</span>
+    <span class="nav-cta">Contact</span>
+  </div>
+</div>
+
+<div class="layout">
+<div class="main">
+  <div class="breadcrumb">BLOG / RISK MODELS</div>
+  <div class="post-title">VaR, SVaR and CVaR:<br>A Practical Python Implementation</div>
+  <div class="post-meta">
+    <span class="post-date">2026-03-29</span>
+    <span class="tag">RISK</span><span class="tag">PYTHON</span><span class="tag">QUANT</span>
+    <span class="read-time">// 6 min read</span>
+  </div>
+
+  <div class="prose">
+    Value at Risk (VaR) quantifies the maximum expected loss at a given confidence level over a fixed horizon.
+    <em>Conditional VaR (CVaR)</em>, also known as Expected Shortfall, measures the average loss in the tail
+    <em>beyond</em> the VaR threshold — a far more informative measure for fat-tailed return distributions.
+  </div>
+
+  <div class="eq-block">
+    <div class="eq-label">DEFINITION · CONDITIONAL VALUE AT RISK</div>
+    <div class="eq-formula">CVaR<sub style="font-size:11px;">α</sub> &nbsp;=&nbsp; −𝔼[ R &nbsp;|&nbsp; R ≤ VaR<sub style="font-size:11px;">α</sub> ]</div>
+    <div class="eq-caption">where α ∈ (0,1) is the confidence level and R is the portfolio return random variable</div>
+  </div>
+
+  <div class="cell">
+    <div class="cell-header">
+      <div class="traffic"><span class="t-red"></span><span class="t-yel"></span><span class="t-grn"></span></div>
+      <span class="cell-in">In&nbsp;[1]</span>
+      <span class="cell-lang">Python 3.11</span>
+    </div>
+    <div class="code-body">
+      <div class="line"><span class="gutter">1</span><span class="code-content"><span class="kw">import</span> <span class="bi">numpy</span> <span class="kw">as</span> <span class="bi">np</span></span></div>
+      <div class="line"><span class="gutter">2</span><span class="code-content"><span class="kw">import</span> <span class="bi">pandas</span> <span class="kw">as</span> <span class="bi">pd</span></span></div>
+      <div class="line"><span class="gutter">3</span><span class="code-content"><span class="kw">from</span> <span class="bi">scipy</span><span class="pm">.</span><span class="bi">stats</span> <span class="kw">import</span> <span class="fn">norm</span></span></div>
+      <div class="line"><span class="gutter">4</span><span class="code-content"></span></div>
+      <div class="line"><span class="gutter">5</span><span class="code-content"><span class="kw">def</span> <span class="fn">compute_var</span><span class="pm">(</span></span></div>
+      <div class="line"><span class="gutter">6</span><span class="code-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="pa">returns</span><span class="pm">:</span> <span class="tp">np.ndarray</span><span class="pm">,</span></span></div>
+      <div class="line"><span class="gutter">7</span><span class="code-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="pa">alpha</span><span class="pm">:</span> <span class="tp">float</span> <span class="op">=</span> <span class="nu">0.95</span><span class="pm">,</span></span></div>
+      <div class="line"><span class="gutter">8</span><span class="code-content"><span class="pm">)</span> <span class="ar">-&gt;</span> <span class="tp">dict</span><span class="pm">:</span></span></div>
+      <div class="line"><span class="gutter">9</span><span class="code-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># Historical simulation — no distribution assumption</span></span></div>
+      <div class="line"><span class="gutter">10</span><span class="code-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="pl">var</span> <span class="op">=</span> <span class="bi">np</span><span class="pm">.</span><span class="fn">percentile</span><span class="pm">(</span><span class="pa">returns</span><span class="pm">,</span> <span class="nu">100</span> <span class="op">*</span> <span class="pm">(</span><span class="nu">1</span> <span class="op">-</span> <span class="pa">alpha</span><span class="pm">))</span></span></div>
+      <div class="line"><span class="gutter">11</span><span class="code-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="pl">tail</span> <span class="op">=</span> <span class="pa">returns</span><span class="pm">[</span><span class="pa">returns</span> <span class="op">&lt;=</span> <span class="pl">var</span><span class="pm">]</span></span></div>
+      <div class="line"><span class="gutter">12</span><span class="code-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="pl">cvar</span> <span class="op">=</span> <span class="pl">tail</span><span class="pm">.</span><span class="fn">mean</span><span class="pm">()</span></span></div>
+      <div class="line"><span class="gutter">13</span><span class="code-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="pl">svar</span> <span class="op">=</span> <span class="bi">np</span><span class="pm">.</span><span class="fn">percentile</span><span class="pm">(</span><span class="pa">returns</span><span class="pm">[:</span><span class="bi">int</span><span class="pm">(</span><span class="bi">len</span><span class="pm">(</span><span class="pa">returns</span><span class="pm">)</span><span class="op">//</span><span class="nu">3</span><span class="pm">)],</span> <span class="nu">100</span> <span class="op">*</span> <span class="pm">(</span><span class="nu">1</span> <span class="op">-</span> <span class="pa">alpha</span><span class="pm">))</span></span></div>
+      <div class="line"><span class="gutter">14</span><span class="code-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="pm">{</span><span class="st">"var"</span><span class="pm">:</span> <span class="bi">round</span><span class="pm">(</span><span class="pl">var</span><span class="pm">,</span><span class="nu">4</span><span class="pm">),</span> <span class="st">"svar"</span><span class="pm">:</span> <span class="bi">round</span><span class="pm">(</span><span class="pl">svar</span><span class="pm">,</span><span class="nu">4</span><span class="pm">),</span> <span class="st">"cvar"</span><span class="pm">:</span> <span class="bi">round</span><span class="pm">(</span><span class="pl">cvar</span><span class="pm">,</span><span class="nu">4</span><span class="pm">)}</span></span></div>
+    </div>
+    <div class="cell-out">
+      <span class="out-label">Out [1]:</span>
+      <span class="pm">{</span><span class="out-key">'var'</span><span class="pm">:</span> <span class="out-val">-0.0231</span><span class="pm">,</span> <span class="out-key">'svar'</span><span class="pm">:</span> <span class="out-val">-0.0318</span><span class="pm">,</span> <span class="out-key">'cvar'</span><span class="pm">:</span> <span class="out-val">-0.0287</span><span class="pm">}</span>
+      <div class="out-ok">✓ computed on 1,258 daily returns (2020–2024)</div>
+    </div>
+  </div>
+
+  <!-- Chart.js cell -->
+  <div class="chart-cell">
+    <div class="chart-cell-header">
+      <div class="traffic"><span class="t-red"></span><span class="t-yel"></span><span class="t-grn"></span></div>
+      <span class="cell-in">Out [1] · Plot</span>
+      <span class="cell-lang">Chart.js · return distribution</span>
+    </div>
+    <div class="chart-body">
+      <div class="chart-label-txt">RETURN DISTRIBUTION WITH VaR / SVaR / CVaR THRESHOLDS</div>
+      <div class="chart-container">
+        <canvas id="returnChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="sidebar">
+  <div class="s-label">TABLE OF CONTENTS</div>
+  <div class="toc">
+    <div class="toc-a">Introduction</div>
+    <div class="toc-i">What is VaR?</div>
+    <div class="toc-i">Stressed VaR (SVaR)</div>
+    <div class="toc-i">CVaR / Exp. Shortfall</div>
+    <div class="toc-i">Python Implementation</div>
+    <div class="toc-i">Visualization</div>
+    <div class="toc-i">Conclusion</div>
+  </div>
+  <div class="s-div"></div>
+  <div class="s-label">TAGS</div>
+  <div class="tags">
+    <span class="tag">risk</span>
+    <span class="tag">python</span>
+    <span class="tag">var</span>
+    <span class="tag">cvar</span>
+    <span class="tag">quant</span>
+  </div>
+</div>
+</div>
+
+<script>
+// ── Simulate a roughly normal daily return distribution ──
+function gaussianRand() {
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+}
+
+const N = 1258;
+const returns = Array.from({length: N}, () => gaussianRand() * 0.012 - 0.0003);
+
+// Sort and compute metrics
+const sorted = [...returns].sort((a,b) => a - b);
+const varIdx = Math.floor(N * 0.05);
+const var95  = sorted[varIdx];
+const cvar95 = sorted.slice(0, varIdx).reduce((a,b) => a+b, 0) / varIdx;
+const svar95 = sorted[Math.floor(varIdx * 0.6)];
+
+// Build histogram bins
+const bins = 40;
+const min = -0.045, max = 0.045;
+const step = (max - min) / bins;
+const counts = new Array(bins).fill(0);
+returns.forEach(r => {
+  const i = Math.min(Math.floor((r - min) / step), bins - 1);
+  if (i >= 0) counts[i]++;
+});
+const labels = Array.from({length: bins}, (_, i) => (min + i * step + step/2).toFixed(3));
+
+// Color bars: tail = red, svar zone = amber, rest = steel blue
+const colors = labels.map(l => {
+  const v = parseFloat(l);
+  if (v <= cvar95) return 'rgba(239,68,68,0.75)';
+  if (v <= svar95) return 'rgba(245,158,11,0.65)';
+  if (v <= var95)  return 'rgba(100,180,220,0.5)';
+  return 'rgba(100,180,220,0.25)';
+});
+
+const ctx = document.getElementById('returnChart').getContext('2d');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels,
+    datasets: [{
+      label: 'Frequency',
+      data: counts,
+      backgroundColor: colors,
+      borderColor: colors.map(c => c.replace(/[\d.]+\)$/, '1)')),
+      borderWidth: 0.5,
+      borderRadius: 2,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: { duration: 1200, easing: 'easeOutQuart' },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#141928',
+        borderColor: '#252d3d',
+        borderWidth: 1,
+        titleColor: '#00d4ff',
+        bodyColor: '#94a3b8',
+        titleFont: { family: 'JetBrains Mono', size: 11 },
+        bodyFont:  { family: 'JetBrains Mono', size: 11 },
+        callbacks: {
+          title: items => `return ≈ ${items[0].label}`,
+          label: item => `count: ${item.raw}`
+        }
+      },
+      annotation: {
+        annotations: {
+          varLine: {
+            type: 'line', xMin: labels.findIndex(l => parseFloat(l) >= var95),
+            xMax: labels.findIndex(l => parseFloat(l) >= var95),
+            borderColor: '#00d4ff', borderWidth: 2, borderDash: [4,3],
+            label: { display: true, content: 'VaR 95%', color: '#00d4ff', font: { family: 'JetBrains Mono', size: 10 }, position: 'start', backgroundColor: '#12141f' }
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: '#1a2030', drawBorder: false },
+        ticks: { color: '#3d4f6e', font: { family: 'JetBrains Mono', size: 9 }, maxTicksLimit: 10, maxRotation: 0 }
+      },
+      y: {
+        grid: { color: '#1a2030', drawBorder: false },
+        ticks: { color: '#3d4f6e', font: { family: 'JetBrains Mono', size: 9 } }
+      }
+    }
+  }
+});
+
+// inject superpowers helper
+const s = document.createElement('script'); s.src = '/helper.js'; document.head.appendChild(s);
+</script>
+</body>
+</html>

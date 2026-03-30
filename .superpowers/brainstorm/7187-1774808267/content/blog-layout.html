@@ -1,0 +1,122 @@
+<h2>Design — Section 3: Blog Post Layout</h2>
+<p class="subtitle">Jupyter-cell MDX rendering · code blocks · LaTeX · charts</p>
+
+<div class="mockup">
+  <div class="mockup-header">secondprofits.net/blog/var-svar-cvar-python</div>
+  <div class="mockup-body" style="background:#0a0e1a;font-family:monospace;padding:0;font-size:12px;">
+
+    <!-- Nav -->
+    <div style="background:#0d1117;border-bottom:1px solid #1e293b;padding:10px 24px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="color:#00d4ff;font-weight:700;font-size:12px;">SECONDPROFITS<span style="color:#334155;">.NET</span></span>
+      <div style="display:flex;gap:16px;font-size:10px;color:#475569;">
+        <span style="color:#00d4ff;">Blog</span><span>Research</span><span>Dashboard</span><span>About</span>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 200px;gap:0;">
+      <!-- Main content -->
+      <div style="padding:28px 32px;border-right:1px solid #1e293b;">
+
+        <!-- Breadcrumb -->
+        <div style="color:#334155;font-size:9px;letter-spacing:1px;margin-bottom:16px;">BLOG / RISK MODELS</div>
+
+        <!-- Title -->
+        <div style="color:#f1f5f9;font-size:18px;font-weight:700;line-height:1.3;margin-bottom:8px;">VaR, SVaR and CVaR:<br>A Practical Python Implementation</div>
+        <div style="display:flex;gap:12px;margin-bottom:20px;align-items:center;">
+          <span style="color:#475569;font-size:10px;">MAR 29, 2026</span>
+          <span style="color:#1e293b;">·</span>
+          <span style="background:#00d4ff18;color:#00d4ff;font-size:9px;padding:2px 6px;border-radius:2px;">RISK</span>
+          <span style="background:#00d4ff18;color:#00d4ff;font-size:9px;padding:2px 6px;border-radius:2px;">PYTHON</span>
+          <span style="color:#475569;font-size:10px;">6 MIN READ</span>
+        </div>
+
+        <!-- Prose -->
+        <div style="color:#94a3b8;font-size:11px;line-height:1.8;margin-bottom:16px;font-family:system-ui;">
+          Value at Risk (VaR) is the most widely used risk measure in quantitative finance. In this post we implement VaR, Stressed VaR (SVaR), and Conditional VaR (CVaR) from scratch in Python with a real equity return series.
+        </div>
+
+        <!-- LaTeX equation block -->
+        <div style="background:#0d1117;border:1px solid #1e293b;border-radius:4px;padding:12px 16px;margin-bottom:16px;text-align:center;">
+          <div style="color:#64748b;font-size:9px;letter-spacing:1px;margin-bottom:8px;">EQUATION</div>
+          <div style="color:#e2e8f0;font-size:13px;font-family:Georgia,serif;">CVaR<sub style="font-size:9px;">α</sub> = −𝔼[R | R ≤ VaR<sub style="font-size:9px;">α</sub>]</div>
+          <div style="color:#334155;font-size:9px;margin-top:6px;">Conditional Value at Risk at confidence level α</div>
+        </div>
+
+        <!-- Jupyter cell: code input -->
+        <div style="background:#0d1117;border:1px solid #1e293b;border-radius:4px;margin-bottom:2px;overflow:hidden;">
+          <div style="background:#0f172a;padding:4px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #1e293b;">
+            <span style="color:#334155;font-size:9px;">IN [1]:</span>
+            <span style="color:#475569;font-size:9px;">Python 3.11</span>
+            <div style="margin-left:auto;display:flex;gap:6px;">
+              <div style="width:6px;height:6px;border-radius:50%;background:#334155;"></div>
+              <div style="width:6px;height:6px;border-radius:50%;background:#334155;"></div>
+            </div>
+          </div>
+          <div style="padding:12px 16px;line-height:1.7;">
+            <div><span style="color:#7dd3fc;">import</span> <span style="color:#e2e8f0;">numpy</span> <span style="color:#7dd3fc;">as</span> <span style="color:#e2e8f0;">np</span></div>
+            <div><span style="color:#7dd3fc;">import</span> <span style="color:#e2e8f0;">pandas</span> <span style="color:#7dd3fc;">as</span> <span style="color:#e2e8f0;">pd</span></div>
+            <div style="margin-top:6px;"><span style="color:#7dd3fc;">def</span> <span style="color:#00d4ff;">compute_var</span><span style="color:#e2e8f0;">(returns, confidence=</span><span style="color:#fbbf24;">0.95</span><span style="color:#e2e8f0;">):</span></div>
+            <div style="margin-left:16px;"><span style="color:#7dd3fc;">return</span> <span style="color:#e2e8f0;">np.percentile(returns,</span> <span style="color:#fbbf24;">100</span> <span style="color:#e2e8f0;">* (</span><span style="color:#fbbf24;">1</span> <span style="color:#e2e8f0;">- confidence))</span></div>
+          </div>
+        </div>
+
+        <!-- Jupyter cell: output -->
+        <div style="background:#060910;border:1px solid #1e293b;border-top:none;border-radius:0 0 4px 4px;margin-bottom:16px;padding:10px 16px;">
+          <span style="color:#334155;font-size:9px;">OUT [1]: </span>
+          <span style="color:#4ade80;font-size:11px;">VaR_95 = -0.0231 &nbsp;|&nbsp; SVaR_95 = -0.0318 &nbsp;|&nbsp; CVaR_95 = -0.0287</span>
+        </div>
+
+        <!-- Chart placeholder -->
+        <div style="background:#0d1117;border:1px solid #1e293b;border-radius:4px;padding:16px;margin-bottom:16px;">
+          <div style="color:#334155;font-size:9px;letter-spacing:1px;margin-bottom:10px;">OUTPUT · RETURN DISTRIBUTION + VAR THRESHOLD</div>
+          <div style="height:60px;display:flex;align-items:flex-end;gap:2px;">
+            <div style="flex:1;height:10%;background:#1e293b;border-radius:1px;"></div>
+            <div style="flex:1;height:20%;background:#1e293b;border-radius:1px;"></div>
+            <div style="flex:1;height:35%;background:#1e293b;border-radius:1px;"></div>
+            <div style="flex:1;height:55%;background:#1e293b;border-radius:1px;"></div>
+            <div style="flex:1;height:80%;background:#1e293b;border-radius:1px;"></div>
+            <div style="flex:1;height:100%;background:#1e293b;border-radius:1px;"></div>
+            <div style="flex:1;height:85%;background:#1e293b;border-radius:1px;"></div>
+            <div style="flex:1;height:60%;background:#1e293b;border-radius:1px;"></div>
+            <div style="flex:1;height:40%;background:#334155;border-radius:1px;"></div>
+            <div style="flex:1;height:20%;background:#ef444444;border-radius:1px;"></div>
+            <div style="flex:1;height:12%;background:#ef444444;border-radius:1px;"></div>
+            <div style="flex:1;height:6%;background:#ef444444;border-radius:1px;"></div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;margin-top:6px;gap:12px;">
+            <span style="color:#334155;font-size:9px;">▪ Returns</span>
+            <span style="color:#ef4444;font-size:9px;">▪ Tail (CVaR region)</span>
+            <span style="color:#00d4ff;font-size:9px;">| VaR threshold</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOC Sidebar -->
+      <div style="padding:28px 16px;background:#0d1117;border-left:1px solid #1e293b;">
+        <div style="color:#334155;font-size:9px;letter-spacing:2px;margin-bottom:14px;">TABLE OF CONTENTS</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:10px;">
+          <div style="color:#00d4ff;border-left:2px solid #00d4ff;padding-left:8px;">Introduction</div>
+          <div style="color:#475569;padding-left:10px;">What is VaR?</div>
+          <div style="color:#475569;padding-left:10px;">Stressed VaR</div>
+          <div style="color:#475569;padding-left:10px;">CVaR (Expected Shortfall)</div>
+          <div style="color:#475569;padding-left:10px;">Python Implementation</div>
+          <div style="color:#475569;padding-left:10px;">Visualization</div>
+          <div style="color:#475569;padding-left:10px;">Conclusion</div>
+        </div>
+
+        <div style="margin-top:24px;padding-top:16px;border-top:1px solid #1e293b;">
+          <div style="color:#334155;font-size:9px;letter-spacing:2px;margin-bottom:10px;">TAGS</div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px;">
+            <span style="background:#00d4ff12;color:#00d4ff;font-size:9px;padding:2px 6px;border-radius:2px;">risk</span>
+            <span style="background:#00d4ff12;color:#00d4ff;font-size:9px;padding:2px 6px;border-radius:2px;">python</span>
+            <span style="background:#00d4ff12;color:#00d4ff;font-size:9px;padding:2px 6px;border-radius:2px;">var</span>
+            <span style="background:#00d4ff12;color:#00d4ff;font-size:9px;padding:2px 6px;border-radius:2px;">cvar</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:16px;">Article layout: Jupyter input/output cells · LaTeX equations · Recharts plots · sticky TOC sidebar. Does this look right?</p>

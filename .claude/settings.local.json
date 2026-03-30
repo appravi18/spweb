@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/abc/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.6/skills/brainstorming/**)",
+      "Bash(bash scripts/start-server.sh --project-dir /Users/abc/coding/sp)",
+      "Bash(mv .superpowers /tmp/sp_superpowers_backup)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --app --src-dir=false --import-alias=\"@/*\" --no-git --no-eslint)",
+      "Bash(printf 'N\\\\n')",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --app --src-dir=false --import-alias=\"@/*\" --no-git --no-eslint --yes)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(git -C /Users/abc/coding/sp add package.json tsconfig.json next.config.mjs tailwind.config.ts vitest.config.ts app/globals.css app/layout.tsx app/page.tsx tests/setup.ts postcss.config.mjs package-lock.json next-env.d.ts)",
+      "Bash(git -C /Users/abc/coding/sp status)",
+      "Bash(git add:*)",
+      "Bash(git:*)",
+      "Bash(node:*)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(''''next:'''', d[''''packages''''][''''node_modules/next''''][''''version'''']\\); print\\(''''tailwindcss:'''', d[''''packages''''][''''node_modules/tailwindcss''''][''''version'''']\\); print\\(''''@tailwindcss/postcss:'''', d[''''packages''''].get\\(''''node_modules/@tailwindcss/postcss'''',{}\\).get\\(''''version'''',''''not found''''\\)\\)\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); pc = d[''''packages''''].get\\(''''node_modules/@tailwindcss/postcss'''',{}\\); print\\(json.dumps\\(pc.get\\(''''peerDependencies'''',{}\\), indent=2\\)\\); print\\(''''requires tailwindcss:'''', pc.get\\(''''peerDependencies'''',{}\\).get\\(''''tailwindcss'''',''''not stated''''\\)\\)\")",
+      "Bash(python3 -c \":*)"
+    ]
+  }
+}

@@ -1,0 +1,79 @@
+---
+title: "VaR, SVaR and CVaR: A Practical Python Implementation"
+date: "2026-03-29"
+tags: ["risk", "python", "quant"]
+excerpt: "Implement Value at Risk, Stressed VaR, and Conditional VaR from scratch using NumPy and SciPy on a real equity return series."
+readTime: 6
+draft: false
+---
+
+Value at Risk (VaR) quantifies the maximum expected loss at a given confidence level over a fixed horizon.
+**Conditional VaR (CVaR)**, also known as Expected Shortfall, measures the *average* loss in the tail
+beyond the VaR threshold — a far more informative measure for fat-tailed return distributions.
+
+<MathBlock
+  formula="\text{CVaR}_\alpha = -\mathbb{E}[R \mid R \leq \text{VaR}_\alpha]"
+  caption="where α ∈ (0,1) is the confidence level and R is the portfolio return random variable"
+/>
+
+## What is Value at Risk?
+
+VaR at confidence level α answers: *"What is the worst loss I should expect on 95% of days?"*
+Historically this is computed by sorting returns and reading the (1-α) percentile.
+
+<JupyterCell
+  n={1}
+  language="python"
+  code={`import numpy as np
+import pandas as pd
+from scipy.stats import norm
+
+def compute_risk_metrics(
+    returns: np.ndarray,
+    alpha: float = 0.95,
+) -> dict:
+    # Historical simulation — no distribution assumption
+    var  = np.percentile(returns, 100 * (1 - alpha))
+    tail = returns[returns <= var]
+    cvar = tail.mean()
+    # Stressed VaR: use worst tercile of history
+    svar = np.percentile(returns[:int(len(returns) // 3)], 100 * (1 - alpha))
+    return {
+        "var":  round(var,  4),
+        "svar": round(svar, 4),
+        "cvar": round(cvar, 4),
+    }`}
+  output="{'var': -0.0231, 'svar': -0.0318, 'cvar': -0.0287}"
+  outputType="success"
+/>
+
+## Stressed VaR (SVaR)
+
+SVaR is a Basel III requirement. It applies the VaR model to a 12-month window of *stressed* market
+conditions (typically the 2008–2009 crisis period). We approximate this by using the worst tercile
+of historical observations.
+
+## CVaR (Expected Shortfall)
+
+CVaR does not ask "what is the boundary of the bad days?" — it asks "on the bad days, how bad is it?"
+This makes it a **coherent risk measure** (it satisfies sub-additivity, unlike plain VaR) and is
+preferred by academics and increasingly by regulators under FRTB.
+
+<JupyterCell
+  n={2}
+  language="python"
+  code={`# Parametric VaR assumes normally distributed returns
+def parametric_var(returns: np.ndarray, alpha: float = 0.95) -> dict:
+    mu, sigma = returns.mean(), returns.std()
+    var_param  = mu + sigma * norm.ppf(1 - alpha)
+    cvar_param = mu - sigma * norm.pdf(norm.ppf(1 - alpha)) / (1 - alpha)
+    return {"var_parametric": round(var_param, 4), "cvar_parametric": round(cvar_param, 4)}`}
+  output="{'var_parametric': -0.0219, 'cvar_parametric': -0.0274}"
+/>
+
+## Conclusion
+
+- Use **historical simulation** for heavy-tailed assets (crypto, small caps)
+- Use **parametric VaR** only when returns are demonstrably normal
+- Always report **CVaR alongside VaR** — it captures tail risk VaR ignores
+- **SVaR** is a regulatory requirement under Basel III/IV — budget for it

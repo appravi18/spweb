@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cool Features</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; background: #0a0e1a; color: #e2e8f0; font-family: 'Inter', sans-serif; font-size: 13px; }
+
+  .page-hdr { padding: 8px 16px; background: #060910; color: #00d4ff; font-family: 'JetBrains Mono', monospace; font-size: 11px; border-bottom: 1px solid #1e293b; }
+  .page-hdr span { color: #334155; }
+
+  h2 { font-size: 20px; font-weight: 800; color: #f8fafc; margin-bottom: 6px; letter-spacing: -0.5px; }
+  .subtitle { color: #475569; font-size: 12px; font-family: 'JetBrains Mono', monospace; margin-bottom: 28px; }
+
+  .wrapper { padding: 32px 40px; }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+
+  .feature-card {
+    background: #0d1117;
+    border: 1px solid #1e293b;
+    border-radius: 8px;
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+  .feature-card:hover { border-color: #00d4ff44; }
+  .feature-icon { font-size: 22px; margin-bottom: 10px; }
+  .feature-name { font-size: 13px; font-weight: 700; color: #f1f5f9; margin-bottom: 6px; }
+  .feature-desc { font-size: 11.5px; color: #64748b; line-height: 1.7; margin-bottom: 12px; }
+  .feature-demo { border-radius: 5px; overflow: hidden; border: 1px solid #252d3d; }
+  .fd-label { background: #141928; padding: 5px 10px; font-size: 9px; font-family: 'JetBrains Mono', monospace; color: #3d4f6e; border-bottom: 1px solid #252d3d; }
+
+  /* ── Demo: Particle hero ── */
+  .demo-canvas-wrap { background: #06080f; height: 90px; position: relative; overflow: hidden; }
+  canvas#hero { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+  .hero-text-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
+  .hero-title { color: #f1f5f9; font-size: 13px; font-weight: 800; white-space: nowrap; }
+  .hero-sub { color: #00d4ff; font-size: 9px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; margin-top: 4px; }
+
+  /* ── Demo: Typewriter ── */
+  .typewriter-demo { background: #0a0c14; padding: 14px 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+  .tw-line { color: #00d4ff; }
+  .cursor { display: inline-block; width: 2px; height: 14px; background: #00d4ff; vertical-align: middle; animation: blink 1s step-end infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* ── Demo: Command palette ── */
+  .cmd-demo { background: #0a0c14; padding: 14px 16px; }
+  .cmd-bar { background: #141928; border: 1px solid #00d4ff44; border-radius: 5px; padding: 8px 12px; display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .cmd-icon { color: #334155; font-size: 12px; }
+  .cmd-input { color: #94a3b8; font-size: 12px; font-family: 'JetBrains Mono', monospace; flex: 1; }
+  .cmd-kbd { background: #1e293b; color: #475569; font-size: 9px; padding: 2px 5px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; }
+  .cmd-result { display: flex; align-items: center; gap: 10px; padding: 5px 8px; border-radius: 3px; background: #00d4ff0a; }
+  .cmd-result-icon { color: #00d4ff; font-size: 11px; }
+  .cmd-result-text { color: #94a3b8; font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+
+  /* ── Demo: Reading progress ── */
+  .progress-demo { background: #0a0c14; padding: 0; }
+  .progress-nav { background: #0d1117; padding: 8px 14px; display: flex; justify-content: space-between; align-items: center; position: relative; }
+  .progress-bar { height: 2px; background: linear-gradient(90deg, #00d4ff, #7aa2f7); width: 68%; position: absolute; bottom: 0; left: 0; border-radius: 0 2px 2px 0; }
+  .prog-brand { color: #00d4ff; font-size: 11px; font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+  .prog-pct { color: #334155; font-size: 9px; font-family: 'JetBrains Mono', monospace; }
+  .progress-body { padding: 10px 14px; }
+  .progress-para { height: 8px; background: #1e293b; border-radius: 2px; margin-bottom: 5px; }
+
+  /* ── Demo: Live ticker ── */
+  .ticker-wrap { background: #06080f; border-top: 1px solid #1e293b; overflow: hidden; padding: 7px 0; white-space: nowrap; }
+  .ticker-inner { display: inline-block; animation: scroll 18s linear infinite; }
+  @keyframes scroll { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+  .tick-item { display: inline-block; margin-right: 40px; font-family: 'JetBrains Mono', monospace; font-size: 10px; }
+  .tick-sym  { color: #94a3b8; margin-right: 6px; }
+  .tick-up   { color: #50fa7b; }
+  .tick-dn   { color: #ff5555; }
+  .tick-sep  { color: #1e293b; margin: 0 10px; }
+
+  /* ── Demo: Copy button ── */
+  .copy-demo { background: #12141f; position: relative; }
+  .copy-code { padding: 14px 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #f8f8f2; line-height: 1.7; }
+  .copy-btn { position: absolute; top: 8px; right: 8px; background: #1e293b; border: 1px solid #334155; color: #94a3b8; font-size: 9px; padding: 4px 8px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; cursor: pointer; }
+  .copy-btn:hover { background: #252d3d; color: #00d4ff; border-color: #00d4ff44; }
+
+  /* ── Demo: Dark chart glow ── */
+  .glow-demo { background: #06080f; padding: 16px; position: relative; }
+  .glow-chart-wrap { position: relative; height: 80px; }
+  canvas#glowLine { width: 100%; height: 100%; }
+
+  .section-title { font-size: 11px; font-weight: 700; color: #00d4ff; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; margin: 24px 0 14px; text-transform: uppercase; }
+
+</style>
+</head>
+<body>
+
+<div class="page-hdr">Design — Section 4: Stylistic Features &nbsp;·&nbsp; <span>interactive demos</span></div>
+<div class="wrapper">
+  <h2>Cool Stylistic Features</h2>
+  <p class="subtitle">// six features that make the site stand out</p>
+
+  <div class="grid">
+
+    <!-- 1. Particle canvas hero -->
+    <div class="feature-card">
+      <div class="feature-icon">✦</div>
+      <div class="feature-name">Particle Canvas Hero</div>
+      <div class="feature-desc">Animated particle network on the homepage hero — nodes connect dynamically, suggesting neural networks and data flow.</div>
+      <div class="feature-demo">
+        <div class="fd-label">LIVE DEMO · homepage hero background</div>
+        <div class="demo-canvas-wrap">
+          <canvas id="hero"></canvas>
+          <div class="hero-text-overlay">
+            <div class="hero-title">Alpha Through Neural Architecture</div>
+            <div class="hero-sub">// DEEP LEARNING FOR TRADING</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Typewriter effect -->
+    <div class="feature-card">
+      <div class="feature-icon">_</div>
+      <div class="feature-name">Typewriter Hero Tagline</div>
+      <div class="feature-desc">The hero subtitle cycles through rotating phrases with a blinking cursor — giving the page a terminal, live feel.</div>
+      <div class="feature-demo">
+        <div class="fd-label">LIVE DEMO · hero subtitle rotation</div>
+        <div class="typewriter-demo">
+          <span style="color:#475569;">// specialising in </span><span class="tw-line" id="tw"></span><span class="cursor"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Command palette -->
+    <div class="feature-card">
+      <div class="feature-icon">⌘</div>
+      <div class="feature-name">Command Palette (⌘K)</div>
+      <div class="feature-desc">Press ⌘K to open a spotlight-style search — jump to any blog post, research paper, or page instantly. Developers love this.</div>
+      <div class="feature-demo">
+        <div class="fd-label">MOCKUP · ⌘K palette</div>
+        <div class="cmd-demo">
+          <div class="cmd-bar">
+            <span class="cmd-icon">⌘</span>
+            <span class="cmd-input">lstm attention mechanism</span>
+            <span class="cmd-kbd">ESC</span>
+          </div>
+          <div class="cmd-result">
+            <span class="cmd-result-icon">📄</span>
+            <span class="cmd-result-text">blog / LSTM Price Forecasting with Attention</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Reading progress bar -->
+    <div class="feature-card">
+      <div class="feature-icon">▓</div>
+      <div class="feature-name">Reading Progress Bar</div>
+      <div class="feature-desc">A thin cyan gradient bar at the top of the navbar tracks scroll progress on blog posts. Subtle but polished.</div>
+      <div class="feature-demo">
+        <div class="fd-label">MOCKUP · sticky nav with progress bar at 68%</div>
+        <div class="progress-demo">
+          <div class="progress-nav">
+            <span class="prog-brand">SECONDPROFITS</span>
+            <span class="prog-pct">68% read</span>
+            <div class="progress-bar"></div>
+          </div>
+          <div class="progress-body">
+            <div class="progress-para" style="width:100%"></div>
+            <div class="progress-para" style="width:88%"></div>
+            <div class="progress-para" style="width:60%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Live market ticker -->
+    <div class="feature-card">
+      <div class="feature-icon">↯</div>
+      <div class="feature-name">Live Market Ticker Strip</div>
+      <div class="feature-desc">A scrolling ticker in the site footer or homepage showing live (or mock) prices — BTC, SPY, VIX, model PnL. Grounds the site in trading.</div>
+      <div class="feature-demo">
+        <div class="fd-label">LIVE DEMO · scrolling ticker</div>
+        <div class="ticker-wrap">
+          <div class="ticker-inner">
+            <span class="tick-item"><span class="tick-sym">SPY</span><span class="tick-up">▲ 512.34 +0.82%</span></span>
+            <span class="tick-item"><span class="tick-sym">BTC</span><span class="tick-dn">▼ 68,241 -1.14%</span></span>
+            <span class="tick-item"><span class="tick-sym">VIX</span><span class="tick-up">▲ 18.42 +3.20%</span></span>
+            <span class="tick-item"><span class="tick-sym">QQQ</span><span class="tick-up">▲ 438.12 +1.05%</span></span>
+            <span class="tick-item"><span class="tick-sym">GLD</span><span class="tick-dn">▼ 221.07 -0.33%</span></span>
+            <span class="tick-item"><span class="tick-sym">MODEL·PNL</span><span class="tick-up">▲ +2.41% MTD</span></span>
+            <span class="tick-item"><span class="tick-sym">SPY</span><span class="tick-up">▲ 512.34 +0.82%</span></span>
+            <span class="tick-item"><span class="tick-sym">BTC</span><span class="tick-dn">▼ 68,241 -1.14%</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glowing chart line + copy button -->
+    <div class="feature-card">
+      <div class="feature-icon">⬡</div>
+      <div class="feature-name">Glowing Equity Curve + Copy Button</div>
+      <div class="feature-desc">Chart lines glow cyan against the dark background. Code blocks have a one-click copy button that flashes "Copied!" on success.</div>
+      <div class="feature-demo">
+        <div class="fd-label">LIVE DEMO · glow chart + copy button</div>
+        <div class="glow-demo">
+          <div class="glow-chart-wrap">
+            <canvas id="glowLine"></canvas>
+          </div>
+        </div>
+        <div class="copy-demo">
+          <div class="copy-code">
+            <span style="color:#ff79c6;">def</span> <span style="color:#50fa7b;">sharpe</span><span style="color:#f8f8f2;">(r, rf=</span><span style="color:#bd93f9;">0.0</span><span style="color:#f8f8f2;">): ...</span>
+          </div>
+          <button class="copy-btn" onclick="this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)">Copy</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── Particle canvas ──
+const canvas = document.getElementById('hero');
+const parent = canvas.parentElement;
+canvas.width  = parent.offsetWidth;
+canvas.height = parent.offsetHeight;
+const ctx = canvas.getContext('2d');
+
+const particles = Array.from({length: 40}, () => ({
+  x: Math.random() * canvas.width,
+  y: Math.random() * canvas.height,
+  vx: (Math.random() - 0.5) * 0.4,
+  vy: (Math.random() - 0.5) * 0.4,
+  r: Math.random() * 1.5 + 0.5
+}));
+
+function drawParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // connections
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i+1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const d = Math.sqrt(dx*dx + dy*dy);
+      if (d < 80) {
+        ctx.strokeStyle = `rgba(0,212,255,${0.12 * (1 - d/80)})`;
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+  // dots
+  particles.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(0,212,255,0.6)';
+    ctx.fill();
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0 || p.x > canvas.width)  p.vx *= -1;
+    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+  });
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+// ── Typewriter ──
+const phrases = ['LSTM models', 'transformer architectures', 'backtesting frameworks', 'CVaR risk metrics', 'alpha generation'];
+let pi = 0, ci = 0, deleting = false;
+const tw = document.getElementById('tw');
+function type() {
+  const phrase = phrases[pi];
+  if (!deleting) {
+    tw.textContent = phrase.slice(0, ++ci);
+    if (ci === phrase.length) { deleting = true; setTimeout(type, 1800); return; }
+  } else {
+    tw.textContent = phrase.slice(0, --ci);
+    if (ci === 0) { deleting = false; pi = (pi+1) % phrases.length; }
+  }
+  setTimeout(type, deleting ? 40 : 80);
+}
+type();
+
+// ── Glow line chart ──
+const gc = document.getElementById('glowLine');
+const gp = gc.parentElement;
+gc.width  = gp.offsetWidth;
+gc.height = gp.offsetHeight;
+const gx = gc.getContext('2d');
+
+const equity = [100,101.2,100.8,102.4,103.1,102.6,104.3,105.8,105.1,107.2,108.4,107.9,109.6,111.2,110.8,112.5,114.1,113.4,115.2,116.8];
+const ex = gc.width, ey = gc.height;
+const pts = equity.map((v,i) => ({
+  x: (i / (equity.length-1)) * (ex - 20) + 10,
+  y: ey - ((v - 99) / 18) * (ey - 16) - 8
+}));
+
+// glow shadow
+gx.shadowColor = '#00d4ff';
+gx.shadowBlur  = 14;
+gx.strokeStyle = '#00d4ff';
+gx.lineWidth   = 2;
+gx.beginPath();
+pts.forEach((p,i) => i === 0 ? gx.moveTo(p.x,p.y) : gx.lineTo(p.x,p.y));
+gx.stroke();
+
+// fill
+gx.shadowBlur = 0;
+const grad = gx.createLinearGradient(0,0,0,ey);
+grad.addColorStop(0, 'rgba(0,212,255,0.18)');
+grad.addColorStop(1, 'rgba(0,212,255,0)');
+gx.fillStyle = grad;
+gx.beginPath();
+pts.forEach((p,i) => i === 0 ? gx.moveTo(p.x,p.y) : gx.lineTo(p.x,p.y));
+gx.lineTo(pts[pts.length-1].x, ey);
+gx.lineTo(pts[0].x, ey);
+gx.closePath();
+gx.fill();
+
+const s = document.createElement('script'); s.src = '/helper.js'; document.head.appendChild(s);
+</script>
+</body>
+</html>

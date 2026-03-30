@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog Layout v3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0a0e1a; color: #e2e8f0; font-family: 'Inter', sans-serif; font-size: 13px; }
+
+  .nav { background: #0d1117; border-bottom: 1px solid #1e293b; padding: 12px 28px; display: flex; justify-content: space-between; align-items: center; }
+  .nav-brand { color: #00d4ff; font-weight: 700; font-size: 13px; font-family: 'JetBrains Mono', monospace; letter-spacing: -0.5px; }
+  .nav-brand span { color: #334155; }
+  .nav-links { display: flex; gap: 20px; font-size: 11px; color: #475569; align-items: center; }
+  .nav-links .active { color: #00d4ff; }
+  .nav-cta { border: 1px solid #00d4ff; color: #00d4ff; padding: 3px 12px; border-radius: 2px; font-size: 10px; font-family: 'JetBrains Mono', monospace; }
+
+  .layout { display: grid; grid-template-columns: 1fr 220px; min-height: calc(100vh - 46px); }
+  .main { padding: 32px 40px; border-right: 1px solid #1e293b; max-width: 780px; }
+
+  .breadcrumb { color: #334155; font-size: 9px; letter-spacing: 2px; margin-bottom: 20px; font-family: 'JetBrains Mono', monospace; }
+  .post-title { font-size: 24px; font-weight: 800; line-height: 1.25; color: #f8fafc; margin-bottom: 12px; letter-spacing: -0.5px; }
+  .post-meta { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #1e293b; }
+  .post-date { color: #475569; font-size: 10px; font-family: 'JetBrains Mono', monospace; }
+  .tag { background: rgba(0,212,255,0.08); color: #00d4ff; font-size: 9px; padding: 3px 8px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.5px; border: 1px solid rgba(0,212,255,0.15); }
+  .read-time { color: #334155; font-size: 10px; font-family: 'JetBrains Mono', monospace; }
+
+  .prose { color: #94a3b8; font-size: 13.5px; line-height: 1.9; margin-bottom: 24px; }
+  .prose em { color: #cbd5e1; font-style: italic; }
+
+  /* Equation */
+  .eq-block { background: #0d1117; border: 1px solid #1e293b; border-left: 3px solid #00d4ff; border-radius: 0 5px 5px 0; padding: 16px 22px; margin-bottom: 24px; }
+  .eq-label { color: #334155; font-size: 9px; letter-spacing: 2px; font-family: 'JetBrains Mono', monospace; margin-bottom: 10px; }
+  .eq-formula { color: #e2e8f0; font-size: 16px; font-family: 'Georgia', serif; line-height: 1.6; }
+  .eq-caption { color: #475569; font-size: 10px; margin-top: 8px; font-family: 'JetBrains Mono', monospace; }
+
+  /* ─── JUPYTER CELL ─────────────────────────────────── */
+  .cell { margin-bottom: 24px; border-radius: 6px; overflow: hidden; border: 1px solid #252d3d; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+
+  .cell-header {
+    background: #141928;
+    padding: 7px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #252d3d;
+  }
+  .traffic { display: flex; gap: 5px; }
+  .traffic span { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .t-red   { background: #ff5f57; }
+  .t-yel   { background: #febc2e; }
+  .t-grn   { background: #28c840; }
+  .cell-in { color: #3d4f6e; font-size: 10px; font-family: 'JetBrains Mono', monospace; margin-left: 4px; }
+  .cell-lang { margin-left: auto; color: #3d4f6e; font-size: 10px; font-family: 'JetBrains Mono', monospace; }
+
+  /* Code body — Dracula Pro palette */
+  .code-body {
+    background: #12141f;
+    padding: 18px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    tab-size: 4;
+    counter-reset: line;
+  }
+  .line {
+    display: flex;
+    padding: 0 18px 0 0;
+  }
+  .line:hover { background: rgba(255,255,255,0.03); }
+  .gutter {
+    width: 44px;
+    min-width: 44px;
+    text-align: right;
+    padding-right: 16px;
+    color: #2d3a4f;
+    font-size: 11px;
+    user-select: none;
+    border-right: 1px solid #1a2030;
+    margin-right: 18px;
+  }
+  .code-content { flex: 1; }
+
+  /* Dracula Pro syntax tokens */
+  .kw  { color: #ff79c6; }            /* keyword: import, def, return, class, if, for, with, as */
+  .bi  { color: #8be9fd; }            /* builtin: np, pd, float, dict, list, print */
+  .fn  { color: #50fa7b; }            /* function call / name */
+  .cn  { color: #f8f8f2; }            /* class name */
+  .st  { color: #f1fa8c; }            /* string */
+  .fs  { color: #f1fa8c; }            /* f-string */
+  .fi  { color: #ffb86c; }            /* f-string interpolation */
+  .nu  { color: #bd93f9; }            /* number */
+  .cm  { color: #6272a4; font-style: italic; } /* comment */
+  .op  { color: #ff79c6; }            /* operator: =, +, -, <, >, : */
+  .pm  { color: #f8f8f2; }            /* punctuation: () [] {} . , */
+  .pa  { color: #ffb86c; }            /* parameter */
+  .de  { color: #50fa7b; }            /* decorator */
+  .tp  { color: #8be9fd; font-style: italic; } /* type hint */
+  .pl  { color: #f8f8f2; }            /* plain text */
+  .ar  { color: #ffb86c; }            /* arrow / special */
+
+  /* Output */
+  .cell-out {
+    background: #0a0c14;
+    border-top: 1px solid #1a2030;
+    padding: 12px 18px 12px calc(44px + 18px + 18px);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  .out-label { color: #3d4f6e; font-size: 10px; display: block; margin-bottom: 4px; }
+  .out-dict  { color: #f8f8f2; }
+  .out-key   { color: #f1fa8c; }
+  .out-val   { color: #bd93f9; }
+  .out-ok    { color: #50fa7b; font-size: 10px; margin-top: 6px; }
+
+  /* Chart */
+  .chart-block { background: #0d1117; border: 1px solid #252d3d; border-radius: 6px; padding: 18px 20px; margin-bottom: 24px; }
+  .chart-label { color: #3d4f6e; font-size: 9px; letter-spacing: 2px; font-family: 'JetBrains Mono', monospace; margin-bottom: 14px; }
+  .bars { height: 72px; display: flex; align-items: flex-end; gap: 3px; }
+  .bar { flex: 1; border-radius: 2px 2px 0 0; }
+  .chart-legend { display: flex; gap: 16px; margin-top: 10px; }
+  .leg { color: #475569; font-size: 9px; font-family: 'JetBrains Mono', monospace; }
+
+  /* Sidebar */
+  .sidebar { padding: 32px 18px; background: #0d1117; }
+  .s-label { color: #334155; font-size: 9px; letter-spacing: 2px; font-family: 'JetBrains Mono', monospace; margin-bottom: 14px; }
+  .toc { display: flex; flex-direction: column; gap: 10px; }
+  .toc-a { color: #00d4ff; border-left: 2px solid #00d4ff; padding-left: 9px; font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+  .toc-i { color: #475569; padding-left: 11px; font-size: 12px; }
+  .s-div { border-top: 1px solid #1e293b; margin: 20px 0; }
+  .tags { display: flex; flex-wrap: wrap; gap: 5px; }
+
+  .page-hdr { padding: 8px 16px; background: #060910; color: #00d4ff; font-family: 'JetBrains Mono', monospace; font-size: 11px; border-bottom: 1px solid #1e293b; }
+  .page-hdr span { color: #334155; }
+</style>
+</head>
+<body>
+
+<div class="page-hdr">Design — Blog Post v3 &nbsp;·&nbsp; <span>JetBrains Mono · Dracula Pro · Inter</span></div>
+
+<div class="nav">
+  <div class="nav-brand">SECONDPROFITS<span>.NET</span></div>
+  <div class="nav-links">
+    <span class="active">Blog</span><span>Research</span><span>Dashboard</span><span>About</span>
+    <span class="nav-cta">Contact</span>
+  </div>
+</div>
+
+<div class="layout">
+<div class="main">
+  <div class="breadcrumb">BLOG / RISK MODELS</div>
+  <div class="post-title">VaR, SVaR and CVaR:<br>A Practical Python Implementation</div>
+  <div class="post-meta">
+    <span class="post-date">2026-03-29</span>
+    <span class="tag">RISK</span><span class="tag">PYTHON</span><span class="tag">QUANT</span>
+    <span class="read-time">// 6 min read</span>
+  </div>
+
+  <div class="prose">
+    Value at Risk (VaR) quantifies the maximum expected loss at a given confidence level over a fixed horizon.
+    <em>Conditional VaR (CVaR)</em>, also known as Expected Shortfall, measures the average loss in the tail
+    <em>beyond</em> the VaR threshold — a far more informative measure for fat-tailed return distributions.
+  </div>
+
+  <div class="eq-block">
+    <div class="eq-label">DEFINITION · CONDITIONAL VALUE AT RISK</div>
+    <div class="eq-formula">CVaR<sub style="font-size:11px;">α</sub> &nbsp;=&nbsp; −𝔼[ R &nbsp;|&nbsp; R ≤ VaR<sub style="font-size:11px;">α</sub> ]</div>
+    <div class="eq-caption">where α ∈ (0,1) is the confidence level and R is the portfolio return random variable</div>
+  </div>
+
+  <!-- ── Cell 1 ── -->
+  <div class="cell">
+    <div class="cell-header">
+      <div class="traffic"><span class="t-red"></span><span class="t-yel"></span><span class="t-grn"></span></div>
+      <span class="cell-in">In&nbsp;[1]</span>
+      <span class="cell-lang">Python 3.11</span>
+    </div>
+    <div class="code-body">
+
+      <div class="line"><span class="gutter">1</span><span class="code-content"><span class="kw">import</span> <span class="bi">numpy</span> <span class="kw">as</span> <span class="bi">np</span></span></div>
+      <div class="line"><span class="gutter">2</span><span class="code-content"><span class="kw">import</span> <span class="bi">pandas</span> <span class="kw">as</span> <span class="bi">pd</span></span></div>
+      <div class="line"><span class="gutter">3</span><span class="code-content"><span class="kw">from</span> <span class="bi">scipy</span><span class="pm">.</span><span class="bi">stats</span> <span class="kw">import</span> <span class="fn">norm</span></span></div>
+      <div class="line"><span class="gutter">4</span><span class="code-content"></span></div>
+      <div class="line"><span class="gutter">5</span><span class="code-content"><span class="kw">def</span> <span class="fn">compute_var</span><span class="pm">(</span></span></div>
+      <div class="line"><span class="gutter">6</span><span class="code-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="pa">returns</span><span class="pm">:</span> <span class="tp">np.ndarray</span><span class="pm">,</span></span></div>
+      <div class="line"><span class="gutter">7</span><span class="code-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="pa">alpha</span><span class="pm">:</span> <span class="tp">float</span> <span class="op">=</span> <span class="nu">0.95</span><span class="pm">,</span></span></div>
+      <div class="line"><span class="gutter">8</span><span class="code-content"><span class="pm">)</span> <span class="ar">-&gt;</span> <span class="tp">dict</span><span class="pm">:</span></span></div>
+      <div class="line"><span class="gutter">9</span><span class="code-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># Historical simulation — no distribution assumption</span></span></div>
+      <div class="line"><span class="gutter">10</span><span class="code-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="pl">var</span> <span class="op">=</span> <span class="bi">np</span><span class="pm">.</span><span class="fn">percentile</span><span class="pm">(</span><span class="pa">returns</span><span class="pm">,</span> <span class="nu">100</span> <span class="op">*</span> <span class="pm">(</span><span class="nu">1</span> <span class="op">-</span> <span class="pa">alpha</span><span class="pm">))</span></span></div>
+      <div class="line"><span class="gutter">11</span><span class="code-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="pl">tail</span> <span class="op">=</span> <span class="pa">returns</span><span class="pm">[</span><span class="pa">returns</span> <span class="op">&lt;=</span> <span class="pl">var</span><span class="pm">]</span></span></div>
+      <div class="line"><span class="gutter">12</span><span class="code-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="pl">cvar</span> <span class="op">=</span> <span class="pl">tail</span><span class="pm">.</span><span class="fn">mean</span><span class="pm">()</span></span></div>
+      <div class="line"><span class="gutter">13</span><span class="code-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="pl">svar</span> <span class="op">=</span> <span class="bi">np</span><span class="pm">.</span><span class="fn">percentile</span><span class="pm">(</span><span class="pa">returns</span><span class="pm">[:</span><span class="bi">int</span><span class="pm">(</span><span class="bu">len</span><span class="pm">(</span><span class="pa">returns</span><span class="pm">)</span><span class="op">//</span><span class="nu">3</span><span class="pm">)],</span> <span class="nu">100</span> <span class="op">*</span> <span class="pm">(</span><span class="nu">1</span> <span class="op">-</span> <span class="pa">alpha</span><span class="pm">))</span></span></div>
+      <div class="line"><span class="gutter">14</span><span class="code-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="pm">{</span></span></div>
+      <div class="line"><span class="gutter">15</span><span class="code-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="st">"var"</span><span class="pm">:</span>  <span class="bi">round</span><span class="pm">(</span><span class="pl">var</span><span class="pm">,</span>  <span class="nu">4</span><span class="pm">),</span></span></div>
+      <div class="line"><span class="gutter">16</span><span class="code-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="st">"svar"</span><span class="pm">:</span> <span class="bi">round</span><span class="pm">(</span><span class="pl">svar</span><span class="pm">,</span> <span class="nu">4</span><span class="pm">),</span></span></div>
+      <div class="line"><span class="gutter">17</span><span class="code-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="st">"cvar"</span><span class="pm">:</span> <span class="bi">round</span><span class="pm">(</span><span class="pl">cvar</span><span class="pm">,</span> <span class="nu">4</span><span class="pm">),</span></span></div>
+      <div class="line"><span class="gutter">18</span><span class="code-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="pm">}</span></span></div>
+
+    </div>
+    <div class="cell-out">
+      <span class="out-label">Out [1]:</span>
+      <span class="out-dict"><span class="pm">{</span><span class="out-key">'var'</span><span class="pm">:</span> <span class="out-val">-0.0231</span><span class="pm">,</span> <span class="out-key">'svar'</span><span class="pm">:</span> <span class="out-val">-0.0318</span><span class="pm">,</span> <span class="out-key">'cvar'</span><span class="pm">:</span> <span class="out-val">-0.0287</span><span class="pm">}</span></span>
+      <div class="out-ok">✓ metrics computed on 1,258 daily returns (2020–2024)</div>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div class="chart-block">
+    <div class="chart-label">OUTPUT · RETURN DISTRIBUTION WITH VaR / SVaR / CVaR THRESHOLDS</div>
+    <div class="bars">
+      <div class="bar" style="height:5%;background:#1e293b;"></div>
+      <div class="bar" style="height:9%;background:#1e293b;"></div>
+      <div class="bar" style="height:18%;background:#1e293b;"></div>
+      <div class="bar" style="height:34%;background:#1e293b;"></div>
+      <div class="bar" style="height:55%;background:#1e293b;"></div>
+      <div class="bar" style="height:78%;background:#1e293b;"></div>
+      <div class="bar" style="height:100%;background:#1e293b;"></div>
+      <div class="bar" style="height:90%;background:#1e293b;"></div>
+      <div class="bar" style="height:65%;background:#1e293b;"></div>
+      <div class="bar" style="height:42%;background:#1e293b;"></div>
+      <div class="bar" style="height:22%;background:#1e293b;"></div>
+      <div class="bar" style="height:12%;background:#1e293b;border:1px solid rgba(0,212,255,0.4);"></div>
+      <div class="bar" style="height:7%;background:#f59e0b33;border:1px solid rgba(245,158,11,0.4);"></div>
+      <div class="bar" style="height:4%;background:#ef444444;border:1px solid rgba(239,68,68,0.4);"></div>
+      <div class="bar" style="height:2%;background:#ef444466;border:1px solid rgba(239,68,68,0.5);"></div>
+    </div>
+    <div class="chart-legend">
+      <span class="leg" style="color:#475569;">▪ Returns</span>
+      <span class="leg" style="color:#00d4ff;">│ VaR 95%</span>
+      <span class="leg" style="color:#f59e0b;">▪ SVaR zone</span>
+      <span class="leg" style="color:#ef4444;">▪ CVaR tail</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="s-label">TABLE OF CONTENTS</div>
+  <div class="toc">
+    <div class="toc-a">Introduction</div>
+    <div class="toc-i">What is VaR?</div>
+    <div class="toc-i">Stressed VaR (SVaR)</div>
+    <div class="toc-i">CVaR / Exp. Shortfall</div>
+    <div class="toc-i">Python Implementation</div>
+    <div class="toc-i">Visualization</div>
+    <div class="toc-i">Conclusion</div>
+  </div>
+  <div class="s-div"></div>
+  <div class="s-label">TAGS</div>
+  <div class="tags">
+    <span class="tag">risk</span>
+    <span class="tag">python</span>
+    <span class="tag">var</span>
+    <span class="tag">cvar</span>
+    <span class="tag">quant</span>
+  </div>
+</div>
+</div>
+
+<script>
+const s = document.createElement('script');
+s.src = '/helper.js';
+document.head.appendChild(s);
+</script>
+</body>
+</html>
